@@ -1,0 +1,42 @@
+@model IEnumerable<GUI.Models.Flight>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Number</th>
+            <th>Passengers Count</th>
+            <th>Brand</th>
+            <th>Status</th>
+            <th>Current Leg</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var flight in Model)
+        {
+            <tr class="@GetRowClass(flight.Status)">
+                <td>@flight.Number</td>
+                <td>@flight.PassengersCount</td>
+                <td>@flight.Brand</td>
+                <td>@flight.Status</td>
+                <td>@flight.CurrentLeg?.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@functions {
+    private string GetRowClass(GUI.Models.FlightStatus status)
+    {
+        switch (status)
+        {
+            case GUI.Models.FlightStatus.Landing:
+                return "table-success";
+            case GUI.Models.FlightStatus.Arrival:
+                return "table-info";
+            case GUI.Models.FlightStatus.Departure:
+                return "table-warning";
+            default:
+                return "";
+        }
+    }
+}

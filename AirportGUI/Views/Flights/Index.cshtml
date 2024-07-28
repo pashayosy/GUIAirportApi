@@ -1,0 +1,63 @@
+@model IEnumerable<GUI.Models.Flight>
+
+<h2>Flights</h2>
+
+<div class="container">
+    <div id="flightTableContainer" class="table-container">
+        @Html.Partial("_FlightTable", Model)
+    </div>
+
+    <div id="loadingSpinner" class="d-flex justify-content-center" style="display: none; margin-top: 20px;">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-container {
+        max-height: 800px;
+        /* Adjust this height as needed */
+        overflow-y: auto;
+    }
+
+    .table-container::-webkit-scrollbar {
+        width: 12px;
+        /* Adjust the scrollbar width as needed */
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background-color: #888;
+        /* Change the scrollbar thumb color */
+        border-radius: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+        /* Change the scrollbar thumb color on hover */
+    }
+</style>
+
+<script>
+    function updateFlightTable() {
+        const tableContainer = document.getElementById('flightTableContainer');
+        const scrollPosition = tableContainer.scrollTop;
+
+        document.getElementById('loadingSpinner').style.display = 'flex';
+
+        fetch('/Flights/Update')
+            .then(response => response.text())
+            .then(data => {
+                tableContainer.innerHTML = data;
+                tableContainer.scrollTop = scrollPosition;
+                document.getElementById('loadingSpinner').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error fetching flight data:', error);
+                document.getElementById('loadingSpinner').style.display = 'none';
+            });
+    }
+
+    // Update the flight table every 5 seconds
+    setInterval(updateFlightTable, 5000);
+</script>

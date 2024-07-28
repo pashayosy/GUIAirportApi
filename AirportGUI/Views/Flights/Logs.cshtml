@@ -1,0 +1,63 @@
+@model IEnumerable<GUI.Models.FlightLog>
+
+<h2>Flight Logs</h2>
+
+<div class="container table-container">
+    <div id="flightLogTableContainer">
+        @Html.PartialAsync("_FlightLogTable", Model)
+    </div>
+
+    <div id="loadingSpinner" class="d-flex justify-content-center" style="display: none; margin-top: 20px;">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-container {
+        max-height: 400px;
+        /* Adjust this height as needed */
+        overflow-y: auto;
+    }
+
+    .table-container::-webkit-scrollbar {
+        width: 12px;
+        /* Adjust the scrollbar width as needed */
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background-color: #888;
+        /* Change the scrollbar thumb color */
+        border-radius: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+        /* Change the scrollbar thumb color on hover */
+    }
+</style>
+
+<script>
+    function updateFlightLogTable() {
+        const tableContainer = document.getElementById('flightLogTableContainer');
+        const scrollPosition = tableContainer.scrollTop;
+
+        document.getElementById('loadingSpinner').style.display = 'flex';
+
+        fetch('/Flights/UpdateLogs')
+            .then(response => response.text())
+            .then(data => {
+                tableContainer.innerHTML = data;
+                tableContainer.scrollTop = scrollPosition;
+                document.getElementById('loadingSpinner').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error fetching flight logs:', error);
+                document.getElementById('loadingSpinner').style.display = 'none';
+            });
+    }
+
+    // Update the flight log table every 5 seconds
+    setInterval(updateFlightLogTable, 5000);
+</script>

@@ -1,0 +1,32 @@
+@model IEnumerable<GUI.Models.Leg>
+
+<table class="table table-hover table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Leg ID</th>
+            <th>Name</th>
+            <th>Capacity</th>
+            <th>Type</th>
+            <th>Current Flights</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var leg in Model)
+        {
+            <tr>
+                <td>@leg.Id</td>
+                <td>@leg.Name</td>
+                <td>@leg.Capacity</td>
+                <td>@leg.Type</td>
+                <td>
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var flight in leg.CurrectFlights)
+                        {
+                            <li>@flight.Number (Passengers: @flight.PassengersCount)</li>
+                        }
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

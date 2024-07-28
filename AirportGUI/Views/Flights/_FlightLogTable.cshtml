@@ -1,0 +1,23 @@
+@model IEnumerable<GUI.Models.FlightLog>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Flight Number</th>
+            <th>Leg Name</th>
+            <th>In</th>
+            <th>Out</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.Flight?.Number</td>
+                <td>@log.Leg?.Name</td>
+                <td>@log.In</td>
+                <td>@log.Out</td>
+            </tr>
+        }
+    </tbody>
+</table>

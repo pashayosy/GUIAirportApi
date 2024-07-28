@@ -1,0 +1,107 @@
+@model GUI.Models.DashboardViewModel
+
+<h2 class="mt-4 mb-4">Dashboard</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Legs</h3>
+            <table class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Leg ID</th>
+                        <th>Name</th>
+                        <th>Capacity</th>
+                        <th>Type</th>
+                        <th>Current Flights</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var leg in Model.Legs)
+                    {
+                        <tr>
+                            <td>@leg.Id</td>
+                            <td>@leg.Name</td>
+                            <td>@leg.Capacity</td>
+                            <td>@leg.Type</td>
+                            <td>
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var flight in leg.CurrectFlights)
+                                    {
+                                        <li>@flight.Number (Passengers: @flight.PassengersCount)</li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Flight Logs</h3>
+            <table class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Flight ID</th>
+                        <th>Leg ID</th>
+                        <th>In</th>
+                        <th>Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model.FlightLogs)
+                    {
+                        <tr>
+                            <td>@log.FlightId</td>
+                            <td>@log.LegId</td>
+                            <td>@log.In</td>
+                            <td>@log.Out</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h3>Flights Overview</h3>
+            <canvas id="flightsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('flightsChart').getContext('2d');
+            var flightStatusData = {
+                labels: ['Landing', 'Arrival', 'Departure'],
+                datasets: [{
+                    label: 'Flights Status',
+                    data: [
+        @Model.Flights.Count(f => f.Status == GUI.Models.FlightStatus.Landing),
+        @Model.Flights.Count(f => f.Status == GUI.Models.FlightStatus.Arrival),
+        @Model.Flights.Count(f => f.Status == GUI.Models.FlightStatus.Departure)
+                            ],
+                    backgroundColor: ['#4caf50', '#2196f3', '#ff9800']
+                }]
+            };
+
+            var flightsChart = new Chart(ctx, {
+                type: 'bar',
+                data: flightStatusData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
